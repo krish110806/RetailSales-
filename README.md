@@ -1,265 +1,539 @@
-# 🛍️ RetailPulse – Retail Sales Analytics & Automated Data Pipeline
-**Retail Intelligence Platform & Automated Data Engineering Architecture**
+# RetailPulse
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.30%2B-FF4B4B?logo=streamlit)
-![Plotly](https://img.shields.io/badge/Plotly-5.18%2B-3F4F75?logo=plotly)
-![dbt](https://img.shields.io/badge/dbt-BigQuery-FF694B?logo=dbt)
-![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-2.7-017CEE?logo=apacheairflow)
-![Google BigQuery](https://img.shields.io/badge/Google%20BigQuery-Warehouse-4285F4?logo=googlecloud)
-![SQLite](https://img.shields.io/badge/SQLite-Persistent%20Store-003B57?logo=sqlite)
+### Retail Sales Analytics & Automated Data Pipeline
 
----
+RetailPulse is a retail sales analytics project that brings data
+ingestion, data quality checks, transformation, pipeline monitoring, and
+business reporting into one application. It uses the Sample Superstore
+dataset to help explore sales, profit, product performance, and regional
+trends.
 
-## 📌 Executive Summary
+> **Project type:** Data Engineering / Data Analytics Microproject\
+> **Primary interface:** Streamlit\
+> **Dataset:** Sample Superstore retail sales data
 
-**RetailPulse** is an enterprise-grade, end-to-end Data Engineering and Business Intelligence platform built to ingest, validate, store, transform, orchestrate, and visualize retail sales data. 
+------------------------------------------------------------------------
 
-Using the authentic **Sample Superstore Sales Dataset** (~1,000 representative records preserved alongside the untouched raw dataset), the system provides automated ELT workflows, audit logs, persistent run history, dbt dimensional marts, an Apache Airflow DAG, and a premium 6-page SaaS Streamlit dashboard with conversational Natural Language BI.
+## Table of Contents
 
----
+-   [Project Overview](#project-overview)
+-   [Objectives](#objectives)
+-   [Key Features](#key-features)
+-   [Technology Stack](#technology-stack)
+-   [System Architecture](#system-architecture)
+-   [Project Structure](#project-structure)
+-   [Dataset](#dataset)
+-   [Getting Started](#getting-started)
+-   [Running the Application](#running-the-application)
+-   [Pipeline and Data Flow](#pipeline-and-data-flow)
+-   [dbt Models](#dbt-models)
+-   [Airflow Orchestration](#airflow-orchestration)
+-   [Airbyte Configuration](#airbyte-configuration)
+-   [Ask Your Data](#ask-your-data)
+-   [Configuration and Security](#configuration-and-security)
+-   [Testing](#testing)
+-   [Current Implementation Notes](#current-implementation-notes)
+-   [Future Enhancements](#future-enhancements)
 
-## 🏗️ System Architecture
+------------------------------------------------------------------------
 
-```mermaid
+## Project Overview
+
+Retail businesses generate transaction data that can be used to
+understand revenue, profitability, product demand, and regional
+performance. However, raw data often needs to be inspected, cleaned,
+validated, transformed, and organized before it can support reliable
+analysis.
+
+RetailPulse demonstrates this workflow through a structured data
+pipeline and an interactive dashboard. The project includes data
+preparation and validation modules, storage for pipeline outputs and run
+information, dbt SQL models, an Airflow DAG, an Airbyte configuration
+template, and a six-page Streamlit interface.
+
+The application is designed to make both the data engineering workflow
+and the resulting business insights easier to inspect.
+
+## Objectives
+
+-   Ingest retail sales records from CSV data.
+-   Profile and validate incoming records.
+-   Separate accepted records from rejected records and record rejection
+    reasons.
+-   Store cleaned data and data quality reports.
+-   Transform sales data into analytical models using dbt.
+-   Define pipeline task dependencies through Apache Airflow.
+-   Present sales and operational metrics through Streamlit.
+-   Support common business questions through the Ask Your Data page.
+
+## Key Features
+
+### 1. Sales Overview
+
+A summary of key retail performance indicators, with a high-level view
+of sales and profit.
+
+### 2. Sales Analytics
+
+Explore sales performance over time and compare relevant sales measures.
+
+### 3. Product Analytics
+
+Review product and category performance to identify high-performing
+products.
+
+### 4. Regional Analytics
+
+Compare sales and profitability across geographic regions.
+
+### 5. Ask Your Data
+
+Use the conversational-style query interface to explore supported
+business questions, such as: - Which product has the highest revenue? -
+Which region has the highest sales? - How do sales change month by
+month? - Which category generates the highest profit?
+
+The answers should be interpreted from the application's available data
+and query logic.
+
+### 6. Data Pipeline
+
+Inspect pipeline activity and data quality information, including input,
+cleaned and rejected records, validation results, and run information
+where available.
+
+------------------------------------------------------------------------
+
+## Technology Stack
+
+  Technology       Purpose
+  ---------------- ---------------------------------------------------
+  Python           Pipeline and application logic
+  Pandas           Data preparation and analysis
+  Streamlit        Interactive dashboard
+  Plotly           Data visualizations
+  Apache Airflow   Workflow orchestration
+  Airbyte          Configurable data ingestion connector
+  dbt              SQL-based data transformation and testing
+  BigQuery         Cloud data warehouse target
+  SQLite           Local persistence for supported pipeline metadata
+  SQL              Analytical transformations and queries
+
+The project contains configuration for these components. Actual cloud
+execution requires the relevant services, packages, credentials, and
+connector setup to be configured in the deployment environment.
+
+------------------------------------------------------------------------
+
+## System Architecture
+
+``` mermaid
 flowchart TD
-    subgraph S1["1. Data Ingestion"]
-        A["Original CSV (Sample-Superstore.csv)"] --> B["SHA-256 Fingerprint & Archival"]
-        B --> C["Airbyte File Source / Local Ingestion"]
-    end
-
-    subgraph S2["2. Data Warehouse (Raw)"]
-        C --> D["BigQuery raw_data / SQLite raw_data"]
-    end
-
-    subgraph S3["3. Cleaning & Validation Engine"]
-        D --> E{"Quality Validator Gate"}
-        E -->|Valid Records| F["Cleaned Silver Store"]
-        E -->|Invalid/Corrupted| G["Rejected Store (with logged reasons)"]
-        E --> H["Persistent Quality Report (JSON)"]
-    end
-
-    subgraph S4["4. dbt Transformations"]
-        F --> I["stg_retail_sales (Staging View)"]
-        I --> J["fct_sales (Transaction Fact)"]
-        J --> K["monthly_sales (Monthly Mart)"]
-        J --> L["product_performance (Product Mart)"]
-        J --> M["regional_sales (Geographic Mart)"]
-        J --> N["dbt Integrity Tests Suite"]
-    end
-
-    subgraph S5["5. Orchestration"]
-        O["Apache Airflow DAG: retailpulse_etl_pipeline"] -.-> S1
-        O -.-> S2
-        O -.-> S3
-        O -.-> S4
-    end
-
-    subgraph S6["6. RetailPulse Dashboard"]
-        K & L & M & J --> P["Streamlit Executive UI (6 Pages)"]
-        P --> Q["Page 1: Sales Overview"]
-        P --> R["Page 2: Sales Analytics & Growth"]
-        P --> S["Page 3: Product Analytics"]
-        P --> T["Page 4: Regional Analytics"]
-        P --> U["Page 5: Ask Your Data (Conversational BI)"]
-        P --> V["Page 6: Data Pipeline Observability"]
-    end
+    A["Sample Superstore CSV"] --> B["Ingestion"]
+    B --> C["Raw Data"]
+    C --> D["Profiling and Validation"]
+    D -->|Valid records| E["Cleaned Data"]
+    D -->|Invalid records| F["Rejected Records"]
+    D --> G["Data Quality Reports"]
+    E --> H["dbt Staging Model"]
+    H --> I["dbt Analytical Models"]
+    I --> J["Analytics Data"]
+    B -. "Configured connector" .-> K["Airbyte"]
+    K -. "Configured destination" .-> C
+    L["Apache Airflow DAG"] -. "Orchestrates tasks" .-> B
+    L -.-> H
+    J --> M["Streamlit Dashboard"]
+    E --> M
+    F --> M
+    G --> M
 ```
 
----
+**Architecture summary:** CSV data enters the ingestion workflow, then
+passes through profiling and validation. Accepted and rejected records
+are stored separately, while quality reports capture validation results.
+dbt models provide analytical tables, Airflow defines task
+orchestration, and Streamlit presents business and pipeline information.
 
-## 🎨 Design System & Color Palette
+------------------------------------------------------------------------
 
-The user interface follows a modern cream-and-navy executive theme:
-- **Background (`#F7F5EF`)**: Premium cream matte surface.
-- **Sidebar (`#142B3B`)**: Midnight navy sidebar with subtle borders.
-- **Primary Accent (`#287D6B`)**: Muted emerald teal highlights.
-- **Secondary Accent (`#C6A568`)**: Warm artisan gold accents.
-- **Cards (`#FFFEFA`)**: Soft ivory card surface with rounded corners (`12px`) and subtle shadows.
-- **Text (`#263746`)**: Charcoal slate for readability.
-- **Dark Mode**: Fully supported via an instant toggle in the sidebar (`#0F1A24` base).
+## Project Structure
 
----
-
-## 📂 Repository Structure
-
-```
-RetailPulse/
-├── data/
-│   ├── raw/
-│   │   ├── Sample-Superstore.csv           # Preserved original dataset
-│   │   └── superstore_sample_1000.csv      # Representative 1,000-record sample
-│   ├── processed/
-│   │   ├── latest_cleaned_sales.csv        # Cleaned dataset
-│   │   └── cleaned_sales_<timestamp>.csv   # Historical clean snapshots
-│   ├── rejected/
-│   │   ├── latest_rejected_records.csv     # Records rejected with audit reason
-│   │   └── rejected_records_<timestamp>.csv
-│   ├── archive/
-│   │   └── raw_snapshot_<timestamp>.csv    # Raw ingestion snapshots
-│   ├── reports/
-│   │   ├── data_profiling_report.json      # Initial profiling report
-│   │   ├── data_profiling_report.md
-│   │   └── latest_quality_report.json      # Runtime data quality report
-│   └── retailpulse.db                      # Persistent SQLite warehouse & history
-├── ingestion/
-│   └── airbyte_config.json                 # Airbyte File Source & BQ Destination config
-├── dbt_retailpulse/
-│   ├── dbt_project.yml                     # dbt configuration
-│   ├── profiles.yml                        # BigQuery & local connection profiles
-│   ├── models/
-│   │   ├── sources.yml                     # Raw table definitions
-│   │   ├── schema.yml                      # Model documentation & generic tests
-│   │   ├── staging/
-│   │   │   └── stg_retail_sales.sql        # Staging view
-│   │   └── marts/
-│   │       ├── fct_sales.sql               # Fact table with profit tiers
-│   │       ├── monthly_sales.sql           # Monthly revenue and AOV mart
-│   │       ├── product_performance.sql     # Product ranking & margins mart
-│   │       └── regional_sales.sql          # State and territory performance mart
-│   └── tests/
-│       ├── assert_positive_sales.sql       # Singular test: non-positive sales
-│       └── assert_positive_quantity.sql    # Singular test: non-positive quantities
+``` text
+Retail Pulse/
+│
+├── .streamlit/
+│   └── config.toml
+│
 ├── airflow/
 │   └── dags/
-│       └── retailpulse_etl_pipeline.py     # End-to-end Airflow DAG
+│       └── retailpulse_etl_pipeline.py
+│
 ├── dashboard/
 │   ├── pages/
-│   │   ├── page_1_sales_overview.py        # Executive macro KPIs & trends
-│   │   ├── page_2_sales_analytics.py       # Daily/monthly velocity & MoM growth
-│   │   ├── page_3_product_analytics.py     # Product quadrant & sub-categories
-│   │   ├── page_4_regional_analytics.py    # Geographic US map & state rankings
-│   │   ├── page_5_ask_your_data.py         # Natural Language Conversational BI
-│   │   └── page_6_data_pipeline.py         # Pipeline monitoring, DAG & controls
+│   │   ├── page_1_sales_overview.py
+│   │   ├── page_2_sales_analytics.py
+│   │   ├── page_3_product_analytics.py
+│   │   ├── page_4_regional_analytics.py
+│   │   ├── page_5_ask_your_data.py
+│   │   └── page_6_data_pipeline.py
 │   └── utils/
-│       ├── theme.py                        # Brand CSS injection & Plotly templates
-│       └── bi_query_engine.py              # Semantic NLP to SQL query engine
+│       ├── bi_query_engine.py
+│       └── theme.py
+│
+├── data/
+│   ├── raw/
+│   │   ├── Sample-Superstore.csv
+│   │   └── superstore_sample_1000.csv
+│   ├── processed/
+│   │   └── latest_cleaned_sales.csv
+│   ├── rejected/
+│   │   └── latest_rejected_records.csv
+│   └── reports/
+│       ├── data_profiling_report.json
+│       ├── data_profiling_report.md
+│       └── latest_quality_report.json
+│
+├── dbt_retailpulse/
+│   ├── models/
+│   │   ├── staging/
+│   │   │   └── stg_retail_sales.sql
+│   │   └── marts/
+│   │       ├── fct_sales.sql
+│   │       ├── monthly_sales.sql
+│   │       ├── product_performance.sql
+│   │       └── regional_sales.sql
+│   ├── tests/
+│   ├── dbt_project.yml
+│   └── profiles.yml.example
+│
+├── ingestion/
+│   └── airbyte_config.json
+│
 ├── pipeline/
-│   ├── db_manager.py                       # SQLite schema & persistent history
-│   ├── bigquery_client.py                  # Google BigQuery warehouse client
-│   ├── cleaner_validator.py                # Validation engine (nulls, duplicates, dates)
-│   ├── ingestion.py                        # Idempotent ingestion & SHA-256 hashing
-│   ├── dbt_runner.py                       # dbt SQL runner & automated test suite
-│   └── pipeline_engine.py                  # End-to-end pipeline orchestrator & mutex lock
+│   ├── bigquery_client.py
+│   ├── cleaner_validator.py
+│   ├── db_manager.py
+│   ├── dbt_runner.py
+│   ├── ingestion.py
+│   └── pipeline_engine.py
+│
 ├── scripts/
-│   └── profile_and_sample.py               # Dataset profiling & 1,000-sample generator
+│   └── profile_and_sample.py
+│
 ├── tests/
-│   └── test_pipeline.py                    # Unit & integration test suite
-├── app.py                                  # Streamlit application entrypoint
-├── config.py                               # Global configuration & paths
-├── docker-compose.yml                      # Airflow & Postgres local orchestration
-├── requirements.txt                        # Python dependencies
-├── .env.example                            # Cloud credentials template
-└── README.md                               # Project documentation
+│   └── test_pipeline.py
+│
+├── app.py
+├── config.py
+├── requirements.txt
+├── .env.example
+├── .gitignore
+└── docker-compose.yml
 ```
 
----
+------------------------------------------------------------------------
 
-## ⚡ Quickstart & Installation
+## Dataset
 
-### 1. Prerequisites
-- Python 3.10 or higher installed
-- Git installed
-- *(Optional)* Docker Desktop (for Airbyte / Apache Airflow)
-- *(Optional)* Google Cloud Platform service account key (for BigQuery)
+RetailPulse uses the **Sample Superstore** dataset, a sample retail
+transactions dataset commonly used for sales analysis.
 
-### 2. Install Dependencies
-```bash
-# Clone or navigate to the repository
-cd "Retail Pulse"
+The project includes: - `Sample-Superstore.csv` --- source dataset. -
+`superstore_sample_1000.csv` --- a representative sample used by the
+project.
 
-# Install required packages
+Common fields include:
+
+  Field                    Description
+  ------------------------ ----------------------------
+  Order ID                 Identifier for the order
+  Order Date               Date the order was placed
+  Ship Date                Date the order was shipped
+  Ship Mode                Shipping method
+  Customer ID              Customer identifier
+  Segment                  Customer segment
+  City, State, Region      Geographic information
+  Product ID               Product identifier
+  Category, Sub-Category   Product classification
+  Product Name             Product description
+  Sales                    Recorded sales amount
+  Quantity                 Units sold
+  Discount                 Discount applied
+  Profit                   Recorded profit amount
+
+**Data note:** The `Sales` column is treated as the recorded sales
+amount in the source data. It should not be multiplied by `Quantity`
+again when calculating revenue.
+
+------------------------------------------------------------------------
+
+## Getting Started
+
+### Prerequisites
+
+Install the following before running the project:
+
+-   Python 3.10 or a compatible version supported by the dependencies.
+-   pip.
+-   Git (optional, for cloning the repository).
+-   Access to the relevant cloud services only if using the cloud
+    warehouse or external connectors.
+
+### 1. Clone the repository
+
+``` bash
+git clone https://github.com/krish110806/RetailSales-.git
+cd RetailSales-
+```
+
+### 2. Create and activate a virtual environment
+
+**Windows PowerShell**
+
+``` powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+**macOS / Linux**
+
+``` bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+``` bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Launch the Streamlit Dashboard
-```bash
+### 4. Configure environment variables
+
+Create a local `.env` file using the example:
+
+**Windows PowerShell**
+
+``` powershell
+Copy-Item .env.example .env
+```
+
+Open `.env` and fill in only the settings needed for your chosen
+execution mode. Do not commit real credentials.
+
+### 5. Configure dbt (if running dbt)
+
+Create a local `profiles.yml` from the example file:
+
+``` powershell
+Copy-Item dbt_retailpulse/profiles.yml.example dbt_retailpulse/profiles.yml
+```
+
+Edit the profile for the warehouse you have configured. Set the
+appropriate environment variables and authentication details locally.
+The actual `profiles.yml` is intentionally excluded from version
+control.
+
+------------------------------------------------------------------------
+
+## Running the Application
+
+From the project root, activate the virtual environment and run:
+
+``` bash
 streamlit run app.py
 ```
-Open [http://localhost:8501](http://localhost:8501) in your browser.
 
----
+Streamlit will print a local URL in the terminal, usually:
 
-## 🛠️ Step-by-Step Architecture Walkthrough
-
-### 1. Data Ingestion & Idempotency
-- Reads the dataset from `data/raw/`.
-- Computes a SHA-256 fingerprint of the input file.
-- Archives a timestamped snapshot in `data/archive/raw_snapshot_<timestamp>.csv`.
-- Avoids duplicate ingestion if identical file hashes have been processed.
-- Connects to Airbyte when running or directly ingests into `raw_data` with metadata tracking (`_ingested_at`, `_run_id`).
-
-### 2. Cleaning & Validation Engine
-Validates records across 5 critical dimensions:
-1. **Critical Missing Values:** Flags rows missing `Order ID`, `Customer ID`, `Sales`, `Quantity`, or `Category`.
-2. **Duplicate Detection:** Identifies exact duplicate rows without double-counting.
-3. **Invalid Dates & Chronology:** Validates date formatting (`YYYY-MM-DD`) and ensures `Ship Date >= Order Date`.
-4. **Numeric Constraints:** Enforces `Sales > 0`, `Quantity > 0`, and `0 <= Discount <= 1`.
-5. **No Double-Counting Rule:** Treats `Sales` as line-item revenue (never re-multiplies by quantity).
-Outputs:
-- Clean dataset saved to `data/processed/latest_cleaned_sales.csv`.
-- Rejected rows saved to `data/rejected/latest_rejected_records.csv` with explicit `rejection_reason`.
-- Quality report saved to `data/reports/latest_quality_report.json`.
-
-### 3. BigQuery & Persistent Storage
-- Supports both **Google BigQuery** (cloud mode) and **SQLite** (local persistent mode).
-- Keeps `raw_data` and `analytics` datasets completely separated.
-- When credentials are not provided, it runs locally without faking cloud syncs.
-
-### 4. dbt Transformations & Integrity Tests
-- **`stg_retail_sales`**: Cleans and types columns, computes `order_year_month`, `order_quarter`, and `profit_margin_pct`.
-- **`fct_sales`**: Fact table categorizing rows into `High Profit`, `Moderate Profit`, `Low Profit`, and `Loss`.
-- **`monthly_sales`**: Monthly aggregated revenue, profit, units sold, and Average Order Value (AOV).
-- **`product_performance`**: SKU-level revenue, profit margins, and `dense_rank()`.
-- **`regional_sales`**: Territorial sales, order count, and state-level profitability.
-- **Tests**: Validates positive quantities, positive sales, and unique row IDs.
-
-### 5. Apache Airflow Orchestration
-The DAG `retailpulse_etl_pipeline` coordinates:
-```
-start >> airbyte_sync >> data_validation >> dbt_run >> dbt_test >> bigquery_validation >> end
-```
-Includes retries (`retries=2`), timeout alarms, execution history logs, and a `docker-compose.yml` for local containerized deployment.
-
----
-
-## 🎓 College Viva & Interview Guide
-
-### Q1: What is the core difference between ETL and ELT in RetailPulse?
-> **Answer:** RetailPulse uses an **ELT** (Extract, Load, Transform) pattern. Raw transaction data is extracted from the CSV/Airbyte source and loaded directly into the raw warehouse table (`raw_data`). Transformations, data standardization, and dimensional aggregations are then executed inside the warehouse using SQL (`dbt`), leveraging the database engine for maximum query performance.
-
-### Q2: Why is `Sales` not multiplied by `Quantity` in the transformations?
-> **Answer:** In the Superstore dataset, the `Sales` column already represents the total monetary revenue for that transaction line item (i.e. Unit Price × Quantity × (1 - Discount)). Multiplying `Sales` by `Quantity` again would severely distort financial metrics and overstate revenue by a factor of 3 to 10×.
-
-### Q3: How does the pipeline ensure idempotency and prevent duplicate records?
-> **Answer:** 
-> 1. We compute a SHA-256 cryptographic hash of the input file before ingestion and check against the `ingestion_log` table.
-> 2. The pipeline enforces a mutex lock (`.pipeline_lock`) to block accidental concurrent executions.
-> 3. dbt models materialize as views/tables (`fct_sales`, `monthly_sales`) using deterministic primary keys (`row_id`) and `COUNT(DISTINCT order_id)` aggregations.
-
-### Q4: How does the "Ask Your Data" Conversational BI work without hardcoding?
-> **Answer:** The engine uses semantic keyword mapping to generate parameterized, syntax-validated SQL statements. It executes the query against live analytics tables, retrieves the actual dynamic figures (revenue, profits, SKUs), formats the answer, plots a responsive Plotly chart, and outputs the real SQL query for transparency.
-
-### Q5: How are rejected records handled?
-> **Answer:** Rather than silently discarding invalid rows, the validation engine routes failing records to `data/rejected/latest_rejected_records.csv`. Each record receives a dedicated `rejection_reason` column (e.g. `Missing critical attribute 'Sales'`), and the failure metrics are permanently stored in the quality audit log and displayed on the Data Pipeline page.
-
----
-
-## 🧪 Running Automated Tests
-
-Run the test suite using Python's standard `unittest` framework:
-```bash
-python tests/test_pipeline.py
-```
-Expected output:
-```
-Ran 6 tests in 0.295s
-OK
+``` text
+http://localhost:8501
 ```
 
----
+Open the displayed URL in your browser.
 
-## 📄 License
-This project is developed for educational and enterprise data engineering demonstrations. Released under the MIT License.
-#   R e t a i l S a l e s -  
- 
+------------------------------------------------------------------------
+
+## Pipeline and Data Flow
+
+The pipeline is organized into the following logical stages:
+
+1.  **Source:** Read the supplied retail CSV dataset.
+2.  **Ingestion:** Load the source records into the pipeline workflow.
+3.  **Profiling:** Inspect columns, data types, missing values, and
+    duplicate records.
+4.  **Validation:** Apply the project's data quality rules.
+5.  **Separation:** Store accepted records in the processed output and
+    invalid records in the rejected output, with reasons where
+    available.
+6.  **Reporting:** Generate data profiling and quality reports.
+7.  **Transformation:** Build staging and analytical models using dbt
+    when configured.
+8.  **Orchestration:** Use the Airflow DAG to define task order and
+    dependencies.
+9.  **Visualization:** Explore business and pipeline information in
+    Streamlit.
+
+The exact stages executed depend on the selected local or cloud
+configuration. A configuration file or DAG definition alone does not
+mean an external Airbyte, BigQuery, or Airflow service has been
+connected and successfully run.
+
+------------------------------------------------------------------------
+
+## dbt Models
+
+The dbt project contains a staging model and analytical models:
+
+  Model                   Purpose
+  ----------------------- -------------------------------------------------
+  `stg_retail_sales`      Staging and preparation of retail sales records
+  `fct_sales`             Sales fact model
+  `monthly_sales`         Monthly sales analysis
+  `product_performance`   Product performance analysis
+  `regional_sales`        Regional sales analysis
+
+Custom SQL tests are included for positive quantity and positive sales
+checks. Run dbt commands from the dbt project directory after
+configuring the profile and warehouse:
+
+``` bash
+cd dbt_retailpulse
+dbt debug
+dbt run
+dbt test
+```
+
+These commands require a working dbt adapter, profile, credentials, and
+accessible source relations.
+
+------------------------------------------------------------------------
+
+## Airflow Orchestration
+
+The project includes the DAG:
+
+``` text
+airflow/dags/retailpulse_etl_pipeline.py
+```
+
+It defines the workflow and dependencies for the retail sales pipeline.
+To execute it through Apache Airflow, install and configure Airflow in a
+compatible environment, place the DAG in the configured DAG directory,
+and configure the required connections and variables.
+
+A DAG file in the repository is the workflow definition; a successful
+Airflow run must be verified in the Airflow environment.
+
+------------------------------------------------------------------------
+
+## Airbyte Configuration
+
+The project includes an Airbyte configuration template:
+
+``` text
+ingestion/airbyte_config.json
+```
+
+It documents the intended CSV source and warehouse destination
+configuration. Configure the source, destination, credentials, and
+accessible file location in your Airbyte deployment before running a
+sync. Environment-variable placeholders in the template must be supplied
+by the deployment or setup process; they are not credentials by
+themselves.
+
+------------------------------------------------------------------------
+
+## Ask Your Data
+
+The Ask Your Data page provides a conversational-style way to explore
+supported retail questions. Example questions include:
+
+-   Which product has the highest revenue?
+-   Which region has the highest sales?
+-   What is the monthly sales trend?
+-   Which category has the highest profit?
+
+The query interface uses the project's query logic and available data.
+It is not a general-purpose AI assistant unless an AI service is
+separately integrated.
+
+------------------------------------------------------------------------
+
+## Configuration and Security
+
+-   Keep `.env` local and never commit it.
+-   Keep service-account keys, `credentials.json`, private keys, and
+    real warehouse credentials out of Git.
+-   Use `.env.example` and `profiles.yml.example` for safe configuration
+    templates.
+-   Do not place passwords or API keys in source code, screenshots, or
+    public documentation.
+-   Review `.gitignore` before pushing changes to a public repository.
+
+------------------------------------------------------------------------
+
+## Testing
+
+The repository includes automated tests under:
+
+``` text
+tests/
+```
+
+Run the available tests from the project root:
+
+``` bash
+python -m unittest discover -s tests -v
+```
+
+A passing test suite validates only the behaviors covered by those
+tests. Separately verify cloud services, Airbyte syncs, dbt execution,
+and Airflow runs in their respective environments.
+
+------------------------------------------------------------------------
+
+## Current Implementation Notes
+
+RetailPulse is structured to support local development as well as
+integrations with external data engineering tools. The dashboard and
+local pipeline workflow can be developed and demonstrated independently
+of cloud services.
+
+Before presenting a cloud component as operational, verify the
+corresponding live setup: - Airbyte source and destination are
+configured and a sync has completed. - BigQuery datasets and tables
+exist and can be queried. - dbt models and tests have run successfully
+against the configured warehouse. - The Airflow DAG has been loaded and
+completed successfully.
+
+This distinction keeps project documentation accurate and makes the
+implementation easier to explain during evaluation.
+
+------------------------------------------------------------------------
+
+## Future Enhancements
+
+-   Complete and validate a scheduled Airbyte-to-BigQuery sync.
+-   Add incremental ingestion and change detection.
+-   Expand dbt schema tests and documentation.
+-   Add automated pipeline alerts and retry handling.
+-   Add more historical trend and forecasting analysis.
+-   Deploy the dashboard and orchestration services to a hosted
+    environment.
+-   Add role-based access and authentication for dashboard users.
+
+------------------------------------------------------------------------
+
+## Author
+
+**RetailPulse --- Retail Sales Analytics & Automated Data Pipeline**
+
+GitHub: <https://github.com/krish110806/RetailSales->
+
+------------------------------------------------------------------------
+
+*This README describes the repository structure and intended workflow.
+Actual execution of external services depends on environment
+configuration and successful service setup.*
