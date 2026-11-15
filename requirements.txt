@@ -1,0 +1,19 @@
+# Core Data Engineering & Analysis
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Dashboard & Visualizations
+streamlit>=1.30.0
+plotly>=5.18.0
+
+# Warehousing & Transformations
+google-cloud-bigquery>=3.14.0
+dbt-bigquery>=1.7.0
+duckdb>=0.9.0
+
+# Orchestration & Workflow
+apache-airflow>=2.7.0
+
+# Environment & Utilities
+python-dotenv>=1.0.0
+requests>=2.31.0

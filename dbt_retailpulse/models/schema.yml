@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: stg_retail_sales
+    description: "Staging model standardizing columns, parsing dates and computing initial line-item metrics"
+    columns:
+      - name: row_id
+        description: "Primary key for line-item records"
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        tests:
+          - not_null
+      - name: sales
+        tests:
+          - not_null
+      - name: quantity
+        tests:
+          - not_null
+
+  - name: fct_sales
+    description: "Core sales fact table containing granular validated transaction lines and profit tiers"
+    columns:
+      - name: row_id
+        tests:
+          - unique
+          - not_null
+      - name: sales
+        tests:
+          - not_null
+      - name: quantity
+        tests:
+          - not_null
+
+  - name: monthly_sales
+    description: "Monthly executive sales performance summary mart"
+    columns:
+      - name: order_year_month
+        tests:
+          - unique
+          - not_null
+      - name: total_revenue
+        tests:
+          - not_null
+
+  - name: product_performance
+    description: "Product and category dimensional analytics mart"
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+      - name: total_revenue
+        tests:
+          - not_null
+
+  - name: regional_sales
+    description: "Geographic and regional sales summary mart"
+    columns:
+      - name: region
+        tests:
+          - not_null
+      - name: total_revenue
+        tests:
+          - not_null

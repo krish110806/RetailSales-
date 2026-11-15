@@ -1,0 +1,324 @@
+{
+  "dataset_name": "Sample Superstore Sales Dataset",
+  "original_file": "data/raw/Sample-Superstore.csv",
+  "sample_file": "data/raw/superstore_sample_1000.csv",
+  "total_original_records": 3295,
+  "sample_records": 1000,
+  "total_columns": 21,
+  "columns": [
+    "Row ID",
+    "Order ID",
+    "Order Date",
+    "Ship Date",
+    "Ship Mode",
+    "Customer ID",
+    "Customer Name",
+    "Segment",
+    "Country",
+    "City",
+    "State",
+    "Postal Code",
+    "Region",
+    "Product ID",
+    "Category",
+    "Sub-Category",
+    "Product Name",
+    "Sales",
+    "Quantity",
+    "Discount",
+    "Profit"
+  ],
+  "exact_duplicates": 0,
+  "row_id_duplicates": 0,
+  "date_profiles": {
+    "Order Date": {
+      "invalid_dates": 0,
+      "earliest_date": "2015-01-04 00:00:00",
+      "latest_date": "2018-12-30 00:00:00"
+    },
+    "Ship Date": {
+      "invalid_dates": 0,
+      "earliest_date": "2015-01-08 00:00:00",
+      "latest_date": "2019-01-05 00:00:00"
+    }
+  },
+  "column_profiles": {
+    "Row ID": {
+      "dtype": "int64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 3295,
+      "samples": [
+        "1",
+        "2",
+        "3"
+      ],
+      "min": 1.0,
+      "max": 3295.0,
+      "mean": 1648.0,
+      "median": 1648.0,
+      "negative_count": 0,
+      "zero_count": 0
+    },
+    "Order ID": {
+      "dtype": "str",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1639,
+      "samples": [
+        "CA-2017-152156",
+        "CA-2017-152156",
+        "CA-2017-138688"
+      ]
+    },
+    "Order Date": {
+      "dtype": "str",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 861,
+      "samples": [
+        "11/8/2017",
+        "11/8/2017",
+        "6/12/2017"
+      ]
+    },
+    "Ship Date": {
+      "dtype": "str",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 914,
+      "samples": [
+        "11/11/2017",
+        "11/11/2017",
+        "6/16/2017"
+      ]
+    },
+    "Ship Mode": {
+      "dtype": "str",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 4,
+      "samples": [
+        "Second Class",
+        "Second Class",
+        "Second Class"
+      ]
+    },
+    "Customer ID": {
+      "dtype": "str",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 701,
+      "samples": [
+        "CG-12520",
+        "CG-12520",
+        "DV-13045"
+      ]
+    },
+    "Customer Name": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 700,
+      "samples": [
+        "Claire Gute",
+        "Claire Gute",
+        "Darrin Van Huff"
+      ]
+    },
+    "Segment": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 3,
+      "samples": [
+        "Consumer",
+        "Consumer",
+        "Corporate"
+      ]
+    },
+    "Country": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 1,
+      "samples": [
+        "United States",
+        "United States",
+        "United States"
+      ]
+    },
+    "City": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 358,
+      "samples": [
+        "Henderson",
+        "Henderson",
+        "Los Angeles"
+      ]
+    },
+    "State": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 46,
+      "samples": [
+        "Kentucky",
+        "Kentucky",
+        "California"
+      ]
+    },
+    "Postal Code": {
+      "dtype": "float64",
+      "null_count": 2,
+      "null_percentage": 0.061,
+      "unique_count": 439,
+      "samples": [
+        "42420.0",
+        "42420.0",
+        "90036.0"
+      ],
+      "min": 1040.0,
+      "max": 99207.0,
+      "mean": 54738.87,
+      "median": 55369.0,
+      "negative_count": 0,
+      "zero_count": 0
+    },
+    "Region": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 4,
+      "samples": [
+        "South",
+        "South",
+        "West"
+      ]
+    },
+    "Product ID": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 1520,
+      "samples": [
+        "FUR-BO-10001798",
+        "FUR-CH-10000454",
+        "OFF-LA-10000240"
+      ]
+    },
+    "Category": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 3,
+      "samples": [
+        "Furniture",
+        "Furniture",
+        "Office Supplies"
+      ]
+    },
+    "Sub-Category": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 17,
+      "samples": [
+        "Bookcases",
+        "Chairs",
+        "Labels"
+      ]
+    },
+    "Product Name": {
+      "dtype": "str",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 1507,
+      "samples": [
+        "Bush Somerset Collection Bookcase",
+        "Hon Deluxe Fabric Upholstered Stacking Chairs, Rounded Back",
+        "Self-Adhesive Address Labels for Typewriters by Universal"
+      ]
+    },
+    "Sales": {
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 2585,
+      "samples": [
+        "261.96",
+        "731.94",
+        "14.62"
+      ],
+      "min": 0.876,
+      "max": 22638.48,
+      "mean": 235.98,
+      "median": 54.82,
+      "negative_count": 0,
+      "zero_count": 0
+    },
+    "Quantity": {
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 14,
+      "samples": [
+        "2.0",
+        "3.0",
+        "2.0"
+      ],
+      "min": 1.0,
+      "max": 14.0,
+      "mean": 3.81,
+      "median": 3.0,
+      "negative_count": 0,
+      "zero_count": 0
+    },
+    "Discount": {
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 12,
+      "samples": [
+        "0.0",
+        "0.0",
+        "0.0"
+      ],
+      "min": 0.0,
+      "max": 0.8,
+      "mean": 0.15,
+      "median": 0.2,
+      "negative_count": 0,
+      "zero_count": 1605
+    },
+    "Profit": {
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 0.03,
+      "unique_count": 2868,
+      "samples": [
+        "41.9136",
+        "219.582",
+        "6.8714"
+      ],
+      "min": -3839.9904,
+      "max": 3919.9888,
+      "mean": 23.36,
+      "median": 8.94,
+      "negative_count": 593,
+      "zero_count": 24
+    }
+  },
+  "detected_quality_issues": {
+    "missing_values": {
+      "Postal Code": 2,
+      "Row ID 3295 (completely corrupted row)": 1
+    },
+    "unusual_numeric": {
+      "negative_profits_count": 593,
+      "note": "Negative profit reflects valid business operational losses on heavily discounted items."
+    }
+  }
+}

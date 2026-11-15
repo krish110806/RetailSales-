@@ -1,0 +1,37 @@
+{
+  "run_id": "20261115_115309",
+  "validation_timestamp": "20261115_115309",
+  "input_records": 1000,
+  "valid_records": 999,
+  "rejected_records": 1,
+  "duplicate_records": 0,
+  "total_missing_cells": 16,
+  "data_quality_percentage": 99.9,
+  "missing_by_column": {
+    "Row ID": 0,
+    "Order ID": 0,
+    "Order Date": 0,
+    "Ship Date": 0,
+    "Ship Mode": 0,
+    "Customer ID": 0,
+    "Customer Name": 1,
+    "Segment": 1,
+    "Country": 1,
+    "City": 1,
+    "State": 1,
+    "Postal Code": 2,
+    "Region": 1,
+    "Product ID": 1,
+    "Category": 1,
+    "Sub-Category": 1,
+    "Product Name": 1,
+    "Sales": 1,
+    "Quantity": 1,
+    "Discount": 1,
+    "Profit": 1
+  },
+  "rejection_reasons_breakdown": {
+    "Missing critical attribute 'Sales'": 1
+  },
+  "status": "PASSED"
+}

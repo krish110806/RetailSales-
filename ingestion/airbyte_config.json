@@ -1,0 +1,26 @@
+{
+  "source_definition": {
+    "name": "File (CSV) Source - RetailPulse",
+    "sourceType": "file",
+    "connectionConfiguration": {
+      "format": "csv",
+      "reader_options": "{\"encoding\": \"utf-8\", \"delimiter\": \",\"}",
+      "url": "data/raw/superstore_sample_1000.csv",
+      "dataset_name": "superstore_raw"
+    }
+  },
+  "destination_definition": {
+    "name": "BigQuery Destination - RetailPulse",
+    "destinationType": "bigquery",
+    "connectionConfiguration": {
+      "project_id": "${GCP_PROJECT_ID}",
+      "dataset_id": "raw_data",
+      "dataset_location": "US",
+      "credentials_json": "${GOOGLE_APPLICATION_CREDENTIALS}",
+      "loading_method": {
+        "method": "Standard"
+      }
+    }
+  },
+  "stream_sync_mode": "full_refresh_overwrite"
+}

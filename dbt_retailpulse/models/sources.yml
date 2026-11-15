@@ -1,0 +1,26 @@
+version: 2
+
+sources:
+  - name: raw_data
+    description: "Raw ingested transactional data from retail operations"
+    tables:
+      - name: superstore_raw
+        description: "Raw Superstore sales transactional data loaded via Airbyte"
+        columns:
+          - name: row_id
+            description: "Unique integer identifier for each record"
+            tests:
+              - unique
+              - not_null
+          - name: order_id
+            description: "Order transaction code"
+            tests:
+              - not_null
+          - name: sales
+            description: "Raw sales revenue"
+            tests:
+              - not_null
+          - name: quantity
+            description: "Number of units purchased"
+            tests:
+              - not_null

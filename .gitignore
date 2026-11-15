@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Secrets & Environment
+.env
+*.json
+!ingestion/airbyte_config.json
+!data/reports/*.json
+
+# Logs
+logs/*.log
+*.log
+
+# Databases & Artifacts
+*.db
+data/*.db
+data/archive/
+data/processed/cleaned_sales_*.csv
+data/rejected/rejected_records_*.csv
+data/reports/data_quality_report_*.json
+.streamlit/credentials.toml
+
+# Locks
+data/.pipeline_lock
+
+# dbt
+dbt_retailpulse/target/
+dbt_retailpulse/dbt_packages/
+dbt_retailpulse/logs/
+
+# Airflow
+airflow/logs/
+airflow/*.pid
+
+# OS & Editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Sensitive configuration files
+dbt_retailpulse/profiles.yml
+credentials.json
+.env

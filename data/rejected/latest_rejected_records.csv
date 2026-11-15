@@ -1,0 +1,2 @@
+Row ID,Order ID,Order Date,Ship Date,Ship Mode,Customer ID,Customer Name,Segment,Country,City,State,Postal Code,Region,Product ID,Category,Sub-Category,Product Name,Sales,Quantity,Discount,Profit,rejection_reason,rejected_at
+3295,CA-2015-138023,8/15/2015,8/18/2015,First Class,K,,,,,,,,,,,,,,,,Missing critical attribute 'Sales',2026-11-15T11:53:09.273449+00:00
